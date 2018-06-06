@@ -1,26 +1,22 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+const mongoose = require("mongoose");
 
 app.use(bodyParser.urlencoded({extended: true}))
+mongoose.connect('mongodb://localhost/yelp_camp');
 app.set('view engine', 'ejs');
 
-var campgrounds = [
-    {name: "Salmon Creek", image:"https://www.nps.gov/noca/planyourvisit/images/Thunder_Creek_Bridge_1.jpg?maxwidth=650&autorotate=false"},
-    {name: "Alpine Creek", image:"http://www.wandernorthgeorgia.com/wp-content/uploads/2016/09/dickscreek5.jpg"},
-    {name: "Bear Creek", image:"https://www.steamboatchamber.com/media/549263/Fish-Creek-Falls-Overlook.jpg"},
-    {name: "Salmon Creek", image:"https://www.nps.gov/noca/planyourvisit/images/Thunder_Creek_Bridge_1.jpg?maxwidth=650&autorotate=false"},
-    {name: "Alpine Creek", image:"http://www.wandernorthgeorgia.com/wp-content/uploads/2016/09/dickscreek5.jpg"},
-    {name: "Bear Creek", image:"https://www.steamboatchamber.com/media/549263/Fish-Creek-Falls-Overlook.jpg"}
-];
-
-app.get('/', function(req, res){
-    res.render('landing');
+// Schema Setup
+const campgroundSchema = new mongoose.Schema({
+    name: String,
+    image: String
 });
 
 app.get('/campgrounds', function(req, res){
     res.render("campgrounds", {campgrounds: campgrounds});
 });
+const Campground = mongoose.model('Campground', campgroundSchema);
 
 app.post('/campgrounds', function(req, res){
     var name = req.body.name;
