@@ -44,11 +44,14 @@ app.get('/campgrounds/new', (req, res) => res.render("new"));
 
 // SHOW
 app.get('/campgrounds/:id', (req, res) => {
-    Campground.findById(req.params.id, (err, campg) => {
+
+    Campground.findById(req.params.id).populate('comments').exec( (err, campg) => {
         if(err)
             console.log(err);
-        else
+        else {
+            console.log(campg)
             res.render('show', {campground:campg});
+        }
     });
 });
 
