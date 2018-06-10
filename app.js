@@ -1,20 +1,13 @@
-const app = require('express')();
-const bodyParser = require('body-parser');
-const mongoose = require("mongoose");
+const   app = require('express')(),
+        bodyParser = require('body-parser'),
+        mongoose = require("mongoose"),
+        Campground = require('./models/campground');
 
 mongoose.connect('mongodb://localhost/yelp_camp');
 app.use(bodyParser.urlencoded({extended: true}));
 app.set('view engine', 'ejs');
 
-// Schema Setup
-const campgroundSchema = new mongoose.Schema({
-    name: String,
-    image: String,
-    description: String
-});
-
-const Campground = mongoose.model('Campground', campgroundSchema);
-
+// Landing
 app.get('/', (req, res) => res.render('landing'));
 
 // INDEX
