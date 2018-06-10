@@ -2,12 +2,12 @@ const   app = require('express')(),
         bodyParser = require('body-parser'),
         mongoose = require("mongoose"),
         Campground = require('./models/campground');
-        seedDB = require('./seeds')
+        seedDB = require('./seeds');
 
 mongoose.connect('mongodb://localhost/yelp_camp');
 app.use(bodyParser.urlencoded({extended: true}));
 app.set('view engine', 'ejs');
-seedDB();
+//seedDB();
 
 // Landing
 app.get('/', (req, res) => res.render('landing'));
@@ -18,7 +18,7 @@ app.get('/campgrounds', (req, res) =>
         if(err)
             console.log(err);
         else
-            res.render("index", {campgrounds: allCampgrounds});
+            res.render("campgrounds/index", {campgrounds: allCampgrounds});
     })
 );
 
@@ -40,7 +40,7 @@ app.post('/campgrounds', (req, res) => {
 });
 
 // NEW
-app.get('/campgrounds/new', (req, res) => res.render("new"));
+app.get('/campgrounds/new', (req, res) => res.render("campgrounds/new"));
 
 // SHOW
 app.get('/campgrounds/:id', (req, res) => {
@@ -50,10 +50,19 @@ app.get('/campgrounds/:id', (req, res) => {
             console.log(err);
         else {
             console.log(campg)
-            res.render('show', {campground:campg});
+            res.render('campgrounds/show', {campground:campg});
         }
     });
 });
+
+// ================== 
+//  COMMENTS
+// ==================
+
+app.get('/campgrounds/:id/comments/new', (req, res)=>{
+    res.render("comments/new");
+});
+
 
 app.listen(3000, () =>
     console.log("Yelp Camp Server up and running")
