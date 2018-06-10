@@ -59,8 +59,14 @@ app.get('/campgrounds/:id', (req, res) => {
 //  COMMENTS
 // ==================
 
-app.get('/campgrounds/:id/comments/new', (req, res)=>{
-    res.render("comments/new");
+app.get('/campgrounds/:id/comments/new', (req, res) => {
+    Campground.findById(req.params.id, (err, campg)=> {
+        if(err) console.log(err);
+        else{
+            res.render("comments/new", { campground: campg});
+        }
+    });
+    
 });
 
 
