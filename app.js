@@ -9,6 +9,10 @@ const   express = require('express'),
         User = require('./models/user'),
         seedDB = require('./seeds');
 
+const   indexRoutes = require('./routes/index'),
+        campgroundRoutes = require('./routes/campgrounds'),
+        commentRoutes = require('./routes/comments');        
+
 mongoose.connect('mongodb://localhost/yelp_camp');
 app.use(bodyParser.urlencoded({extended: true}));
 app.set('view engine', 'ejs');
@@ -34,127 +38,9 @@ app.use((req, res, next)=>{
     next();
 });
 
-// Landing
-app.get('/', (req, res) => res.render('landing'));
-
-// INDEX
-app.get('/campgrounds', (req, res) =>
-    Campground.find({}, (err, allCampgrounds) => {
-        if(err)
-            console.log(err);
-        else
-            res.render("campgrounds/index", {campgrounds: allCampgrounds});
-    })
-);
-
-// CREATE
-app.post('/campgrounds', (req, res) => {
-    let newCampground = { 
-        name: req.body.name,
-        image: req.body.image,
-        description: req.body.description
-    }
-
-    Campground.create(newCampground, (err, newCampground) => {
-        if(err)
-            console.log(err);
-        else
-            res.redirect('/campgrounds');
-    });
-    
-});
-
-// NEW
-app.get('/campgrounds/new', (req, res) => res.render("campgrounds/new"));
-
-// SHOW
-app.get('/campgrounds/:id', (req, res) => {
-
-    Campground.findById(req.params.id).populate('comments').exec( (err, campg) => {
-        if(err)
-            console.log(err);
-        else {
-            console.log(campg)
-            res.render('campgrounds/show', {campground:campg});
-        }
-    });
-});
-
-// ================== 
-//  COMMENTS
-// ==================
-
-app.get('/campgrounds/:id/comments/new', isLoggedIn, (req, res) => {
-    Campground.findById(req.params.id, (err, campg)=> {
-        if(err) console.log(err);
-        else{
-            res.render("comments/new", { campground: campg});
-        }
-    });
-    
-});
-
-app.post('/campgrounds/:id/comments', isLoggedIn, (req, res) => {
-    Campground.findById(req.params.id, (err, campg) => {
-        if(err){
-            console.log(err);
-            res.redirect('/campgrounds');
-        } else {
-            Comment.create(req.body.comment, (err, comment) => {
-                if(err) console.log(err);
-                else{
-                    campg.comments.push(comment);
-                    campg.save();
-                    res.redirect(`/campgrounds/${req.params.id}`);
-                }
-            });
-        }
-    });
-});
-
-
-// ====== Auth Routes
-// register
-app.get('/register', (req, res) => {
-    res.render('register');
-});
-
-app.post('/register', (req, res) => {
-    const newUser = new User({username: req.body.username});
-    User.register(newUser, req.body.password, (err, user)=>{
-        if(err){
-            console.log(err);
-            return res.render("register");
-        }
-        passport.authenticate("local")(req, res, ()=>{
-            res.redirect("/campgrounds");
-        });
-    });
-});
-
-//login/logout
-app.get('/login', (req, res)=>{
-    res.render('login');
-});
-
-app.post('/login', passport.authenticate('local',
-    {
-        successRedirect: "/campgrounds",
-        failureRedirect: "/login"
-    }),
-    (req, res)=>{});
-
-app.get('/logout', (req, res)=>{
-    req.logout();
-    res.redirect('/campgrounds');
-});
-
-function isLoggedIn(req, res, next){
-    if(req.isAuthenticated()){
-        return next();
-    }
-    res.redirect('/login');
-}
+app.use("/", indexRoutes);
+app.use("/campgrounds", campgroundRoutes);
+app.use("/campgrounds/:id/comments", commentRoutes);
 
 app.listen(3000, () =>
     console.log("Yelp Camp Server up and running")
