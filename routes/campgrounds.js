@@ -1,5 +1,5 @@
 const   express = require('express'),
-        router = express.Router(),
+        router = express.Router({mergeParams:true}),
         Campground = require('../models/campground');
 
 // INDEX
@@ -13,10 +13,14 @@ router.get('/', (req, res) =>
 );
 
 // CREATE
-router.post('/', (req, res) => {
+router.post('/', isLoggedIn, (req, res) => {
     let newCampground = { 
         name: req.body.name,
         image: req.body.image,
+        author: {
+            id: req.user._id,
+            username: req.user.username
+        },
         description: req.body.description
     }
 
@@ -30,7 +34,7 @@ router.post('/', (req, res) => {
 });
 
 // NEW
-router.get('new', (req, res) => res.render("campgrounds/new"));
+router.get('/new', isLoggedIn, (req, res) => res.render("campgrounds/new"));
 
 // SHOW
 router.get('/:id', (req, res) => {
@@ -44,5 +48,12 @@ router.get('/:id', (req, res) => {
         }
     });
 });
+
+function isLoggedIn(req, res, next){
+    if(req.isAuthenticated()){
+        return next();
+    }
+    res.redirect('/login');
+}
 
 module.exports = router;
