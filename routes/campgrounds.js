@@ -70,6 +70,12 @@ router.put('/:id', (req, res) => {
         }
     });
 });
+
+// DELETE
+router.delete('/:id', (req, res) => Campground.findByIdAndRemove(req.params.id, (err)=>{
+    res.redirect("/campgrounds");
+}));
+
 function isLoggedIn(req, res, next){
     if(req.isAuthenticated()){
         return next();
