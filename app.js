@@ -7,6 +7,7 @@ const   express = require('express'),
         Campground = require('./models/campground'),
         Comment = require('./models/comment'),
         User = require('./models/user'),
+        methodOverride = require('method-override'),
         seedDB = require('./seeds');
 
 const   indexRoutes = require('./routes/index'),
@@ -17,6 +18,7 @@ mongoose.connect('mongodb://localhost/yelp_camp');
 app.use(bodyParser.urlencoded({extended: true}));
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
+app.use(methodOverride('_method'));
 //seedDB();
 
 //Passport Configuration
