@@ -79,7 +79,6 @@ function isLoggedIn(req, res, next){
     res.redirect('/login');
 }
 
-
 function checkCampgroundOwnership(req, res, next){
     if(req.isAuthenticated()){
         Campground.findById(req.params.id, (err, campg) => {
