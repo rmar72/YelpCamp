@@ -26,10 +26,14 @@ router.post('/', middleware.isLoggedIn, (req, res) => {
     }
 
     Campground.create(newCampground, (err, newCampground) => {
-        if(err)
+        if(err){
+            req.flash("error", "Something went wrong.");
             console.log(err);
-        else
+        }
+        else{
+            req.flash("success", "Successfully added campground.");
             res.redirect('/campgrounds');
+        }
     });
     
 });
