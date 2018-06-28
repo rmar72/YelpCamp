@@ -10,7 +10,12 @@ router.get('/', (req, res) => res.render('landing'));
 // ====== Auth Routes
 // register
 router.get('/register', (req, res) => {
-    res.render('register');
+    if(req.user) {
+        req.flash("error", "You are already logged in, you cannot register.");
+        return res.redirect("back");
+    }else{
+        res.render('register');
+    }
 });
 
 router.post('/register', (req, res) => {
@@ -21,7 +26,7 @@ router.post('/register', (req, res) => {
             return res.redirect("/register");
         }
         passport.authenticate("local")(req, res, ()=>{
-            req.flash("success", "Welcome to YelpCamp" + user.username);
+            req.flash("success", "Welcome to YelpCamp " + user.username);
             res.redirect("/campgrounds");
         });
     });
