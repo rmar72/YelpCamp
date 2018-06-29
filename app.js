@@ -9,6 +9,7 @@ const   express = require('express'),
         User = require('./models/user'),
         methodOverride = require('method-override'),
         flash = require('connect-flash'),
+        port = process.env.PORT || 3000;
         seedDB = require('./seeds');
 
 const   indexRoutes = require('./routes/index'),
@@ -48,6 +49,4 @@ app.use("/", indexRoutes);
 app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds/:id/comments", commentRoutes);
 
-app.listen(3000, () =>
-    console.log("Yelp Camp Server up and running")
-);
+app.listen(port, () => console.log('YelpCamp Server has started'));
