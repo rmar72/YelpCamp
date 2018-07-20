@@ -14,7 +14,7 @@ router.get('/register', (req, res) => {
         req.flash("error", "You are already logged in, you cannot register.");
         return res.redirect("back");
     }else{
-        res.render('register');
+        res.render("register", {page: 'register'});
     }
 });
 
@@ -34,7 +34,7 @@ router.post('/register', (req, res) => {
 
 //login/logout
 router.get('/login', (req, res)=>{
-    res.render('login');
+    res.render("login", {page: 'login'}); 
 });
 
 router.post('/login', passport.authenticate('local',
