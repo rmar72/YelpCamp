@@ -1,7 +1,7 @@
 # YelpCamp
 Full Stack Web App 
 ##### Back-end:  
-- NodeJS, Express, Passport(OAuth), MongoDB 
+- NodeJS, Express, Passport(OAuth), MongoDB/Mongoose 
 
 ##### Front-end: 
 - Bootstrap & EJS
